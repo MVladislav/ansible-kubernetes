@@ -1,0 +1,65 @@
+---
+# tasks file for kubernetes
+
+# ------------------------------------------------------------------------------
+- name: "kubernetes - install server"
+  become: true
+  ansible.builtin.shell: >
+    set -o pipefail &&
+    curl -sfL {{ kubernetes_install_url }} |
+    sh -s - server
+    --token={{ kubernetes_token }}
+    --tls-san {{ kubernetes_server_dns_name }}
+    --tls-san {{ kubernetes_server_ip }}
+    {{ kubernetes_server_args }}
+    --cluster-init
+  args:
+    executable: /bin/bash
+  register: kubernetes_installed_server
+  changed_when: kubernetes_installed_server is defined and kubernetes_installed_server.rc != 0
+  when: >
+    kubernetes_setup_server is defined and kubernetes_setup_server | bool
+    and kubernetes_install_url is defined and kubernetes_install_url|length > 0
+    and kubernetes_token is defined and kubernetes_token|length > 0
+    and kubernetes_server_dns_name is defined and kubernetes_server_dns_name|length > 0
+    and kubernetes_server_ip is defined and kubernetes_server_ip|length > 0
+  tags:
+    - kubernetes
+
+# ------------------------------------------------------------------------------
+- name: "kubernetes - install slave server "
+  become: true
+  ansible.builtin.shell: >
+    set -o pipefail &&
+    curl -sfL {{ kubernetes_install_url }} |
+    sh -s - server
+    --token={{ kubernetes_token }}
+    --tls-san {{ kubernetes_server_dns_name }}
+    --tls-san {{ kubernetes_server_ip }}
+    {{ kubernetes_server_slave_args }}
+    --server https://{{ kubernetes_server_ip }}:{{ kubernetes_port }}
+  args:
+    executable: /bin/bash
+  register: kubernetes_installed_server_slave
+  changed_when: kubernetes_installed_server_slave is defined and kubernetes_installed_server_slave.rc != 0
+  when: >
+    kubernetes_setup_server_slave is defined and kubernetes_setup_server_slave | bool
+    and kubernetes_install_url is defined and kubernetes_install_url|length > 0
+    and kubernetes_token is defined and kubernetes_token|length > 0
+    and kubernetes_server_dns_name is defined and kubernetes_server_dns_name|length > 0
+    and kubernetes_server_slave_ip is defined and kubernetes_server_slave_ip|length > 0
+    and kubernetes_server_ip is defined and kubernetes_server_ip|length > 0
+    and kubernetes_port is defined
+  tags:
+    - kubernetes
+
+# ------------------------------------------------------------------------------
+- name: "kubernetes - fetch k3s yaml"
+  become: true
+  ansible.builtin.fetch:
+    src: "{{ kubernetes_config_server_path }}"
+    dest: "{{ kubernetes_config_local_path }}"
+  when: >
+    kubernetes_fetch_k3s_yaml is defined and kubernetes_fetch_k3s_yaml | bool
+  tags:
+    - kubernetes

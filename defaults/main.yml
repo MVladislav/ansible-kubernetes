@@ -1,0 +1,20 @@
+---
+# defaults file for kubernetes
+
+kubernetes_setup_server: true
+kubernetes_setup_server_slave: false
+kubernetes_fetch_k3s_yaml: false
+
+kubernetes_token:
+kubernetes_port: 6443
+kubernetes_server_dns_name:
+kubernetes_server_ip:
+kubernetes_server_args: --no-deploy traefik
+
+kubernetes_server_slave_ip:
+kubernetes_server_slave_args: --no-deploy traefik
+
+kubernetes_install_url: https://get.k3s.io
+
+kubernetes_config_server_path: /etc/rancher/k3s/k3s.yaml
+kubernetes_config_local_path: "~/.kube/{{ ansible_host  }}.yaml"
