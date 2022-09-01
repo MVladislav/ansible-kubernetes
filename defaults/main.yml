@@ -17,4 +17,4 @@ kubernetes_server_slave_args: --no-deploy traefik
 kubernetes_install_url: https://get.k3s.io
 
 kubernetes_config_server_path: /etc/rancher/k3s/k3s.yaml
-kubernetes_config_local_path: "~/.kube/{{ ansible_host  }}.yaml"
+kubernetes_config_local_path: "~/.kube/{{ ansible_host }}.yaml"
