@@ -1,6 +1,8 @@
 # Role Name
 
-_A brief description of the role goes here._
+**kubernetes**
+
+[![Ansible Lint](https://github.com/MVladislav/ansible-kubernetes/actions/workflows/ansible-lint.yml/badge.svg)](https://github.com/MVladislav/ansible-kubernetes/actions/workflows/ansible-lint.yml)
 
 ## Requirements
 
